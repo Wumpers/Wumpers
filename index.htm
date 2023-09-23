@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6997015031032377"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Rewards Redemption Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: #2c2c2c; /* Dark gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: inline-block; /* Make the container expand with the content */
+            max-width: 100%; /* Allow the container to expand to its parent's width */
+            
+        }
+
+        h1 {
+            color: #93c500; /* Xbox green */
+            font-size: 24px; /* Increased heading font size */
+        }
+
+        label, button {
+            display: block;
+            margin: 10px 0;
+            color: #93c500; /* Xbox green text color for labels */
+        }
+
+        label {
+            font-weight: bold; /* Make the label text bold */
+        }
+
+        input[type="text"] {
+            width: 80%; /* Slightly shorter input field */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff; /* White background */
+        }
+
+        button {
+            background-color: #93c500; /* Xbox green */
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 60%; /* Reduced button width */
+            margin: 10px auto; /* Centered button */
+        }
+
+        button:hover {
+            background-color: #5c8001; /* Darker Xbox green on hover */
+        }
+
+        #result {
+            margin-top: 20px;
+            color: #fff; /* White text color */
+            white-space: nowrap; /* Prevent word wrap */
+        }
+
+        #result b {
+            color: #93c500; /* Xbox green */
+            font-weight: bold;
+        }
+
+        .amount {
+            color: #93c500; /* Xbox green for the amount */
+            font-weight: bold;
+            font-size: 18px; /* Increased font size for the amount */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Microsoft Rewards Redemption Calculator</h1>
+        <label for="rewardPoints"><b>Enter the number of Microsoft Rewards points you have:</b></label>
+        <input type="text" id="rewardPoints" placeholder="Enter points (e.g., 1,000)" />
+        <button onclick="calculateGiftCards()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateGiftCards() {
+            var rewardPointsInput = document.getElementById("rewardPoints");
+            // Remove commas and convert to an integer
+            var rewardPoints = parseInt(rewardPointsInput.value.replace(/,/g, ''));
+            if (isNaN(rewardPoints) || rewardPoints < 0) {
+                document.getElementById("result").innerHTML = "Please enter a valid positive number of rewards points.";
+                return;
+            }
+
+            var conversionRatesUK = {
+                "£5 Xbox/Microsoft Gift Card(s)": 5850,
+                "£10 Xbox/Microsoft Gift Card(s)": 11700,
+                "£25 Xbox/Microsoft Gift Card(s)": 29250,
+                "£5 Amazon.co.uk Gift Card(s)": 7600,
+                "£10 Amazon.co.uk Gift Card(s)": 15200
+            };
+
+            var conversionRatesUS = {
+                "$5 Xbox/Microsoft Gift Card(s)": 4650,
+                "$10 Xbox/Microsoft Gift Card(s)": 9300
+            };
+
+            var resultMessageUK = "<b>In the UK and with the level 2 perk you can withdraw:</b><br><br>";
+            var isFirstAmazon = true; // Flag to track the first Amazon gift card
+
+            for (var giftCard in conversionRatesUK) {
+                if (conversionRatesUK.hasOwnProperty(giftCard)) {
+                    var rate = conversionRatesUK[giftCard];
+                    var giftCards = Math.floor(rewardPoints / rate);
+                    if (giftCards > 0) {
+                        if (giftCard.startsWith("£5 Amazon") && isFirstAmazon) {
+                            resultMessageUK += "<hr>"; // Add a horizontal line above the first Amazon gift card
+                            isFirstAmazon = false; // Set the flag to false after the first Amazon gift card
+                        }
+                        var totalValue = giftCards * parseInt(giftCard.substring(1));
+                        resultMessageUK += "<span class='amount'>" + giftCards + "</span> " + giftCard + ", total value: £" + totalValue + "<br>";
+                    }
+                }
+            }
+
+            var resultMessageUS = "<b>In the US and with the level 2 perk you can withdraw:</b><br><br>";
+
+            for (var giftCard in conversionRatesUS) {
+                if (conversionRatesUS.hasOwnProperty(giftCard)) {
+                    var rate = conversionRatesUS[giftCard];
+                    var giftCards = Math.floor(rewardPoints / rate);
+                    if (giftCards > 0) {
+                        var totalValue = giftCards * parseInt(giftCard.substring(1));
+                        resultMessageUS += "<span class='amount'>" + giftCards + "</span> " + giftCard + ", total value: $" + totalValue + "<br>";
+                    }
+                }
+            }
+
+            // Combine UK and US results
+            var resultMessage = resultMessageUK + "<br>" + resultMessageUS;
+
+            document.getElementById("result").innerHTML = resultMessage;
+        }
+
+        // Allow the Enter key to trigger the calculation
+        document.getElementById("rewardPoints").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                calculateGiftCards();
+            }
+        });
+    </script>
+</body>
+</html>
